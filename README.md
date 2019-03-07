@@ -1,4 +1,4 @@
-# OS Project 01 - Dispatcher / Scheduler Simulator
+# Dispatcher / Scheduler Simulator
 
 Your task is to develop a simulation of a dispatcher/scheduler that assigns processes (or jobs) to a set of available processors or
 processing nodes.
