@@ -32,7 +32,7 @@ private:
 	  struct node *next;
 	};
 	struct node *headPtr, *tailPtr;
-	int numOfItems, avg_time;
+	int numOfItems, avg_time, mem_avail;
 
 public:
 
@@ -48,7 +48,8 @@ Processor::Processor() {
   this->headPtr = NULL;
   this->tailPtr = NULL;
   this->numOfItems = 0;
-  this.avg_time = 0;
+  this->avg_time = 0;
+  this->mem_avail = 8000;   // 8000 MB or 8 GB
 }
 
 /*
