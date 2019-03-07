@@ -46,8 +46,7 @@ public:
   void setP3speed();   // should be 3 GHz
   void setP4speed();   // should be 3 GHz
   void setP5speed();   // should be 4 GHz
-
-	
+  
 };
 
 Processor::Processor() {
@@ -172,15 +171,26 @@ int main() {
     P1.add(p[idx]);     // this is how you add processes to processor
   }
   
-  /*
+  
   for (idx = 0; idx <+ NPROCESSES; idx++) {
     burstTotal += p[idx].burst_time;
-    cout << p[idx].burst_time << endl;
-  }*/
+    if ( p[idx].mem_size > 4000 )
+       P5.add(p[idx]);  // if mem size of process is > 4 GB, it has to go to processor 5
+    //cout << p[idx].burst_time << endl;
+  }
   
   //burst_avg = burstTotal / 200;
   //cout << endl << burst_avg << endl << endl;
+  cout << "Processor 1 List:" << endl;
   P1.print();
+  cout << "\nProcessor 2 List:\n"; 
+  P2.print();
+  cout << "\nProcessor 3 List:\n"; 
+  P3.print();  
+  cout << "\nProcessor 4 List:\n"; 
+  P4.print();  
+  cout << "\nProcessor 5 List:\n"; 
+  P5.print();
   
   return 0;
 }
@@ -189,7 +199,7 @@ int main() {
   Returns a random number to each unique process between 10 * 10^6 cycles – 50 *10^12 cycles
 */
 int findBurstTime() {
-  // generating a few negative numbers, FIX LATER
+  // TODO: generating a few negative numbers, FIX LATER
   return rand() % (49999990000000) + (10000000); 
 }
 
