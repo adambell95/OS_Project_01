@@ -1,5 +1,5 @@
 /*
-  Names:        Parker Tuck, 
+  Names:        Parker Tuck, Adam Bell
   Class:        CSCE 4600 - Operating Systems
   Instructor:   Armin R. Mikler
   Description:  This .cpp file should only do problem #1 as of right now
