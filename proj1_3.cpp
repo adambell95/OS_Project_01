@@ -160,6 +160,7 @@ double findMemSize();
 int main() {
 
   Processor P1, P2, P3, P4, P5;
+  P1.setP1speed(); P2.setP2speed(); P3.setP3speed(); P4.setP4speed(); P5.setP5speed();
   struct Process p[NPROCESSES+1];
   int idx = 0, burstTotal = 0, burst_avg = 0;
   srand(time(NULL));
