@@ -21,19 +21,19 @@ scheduling algorithm that assigns the set 200 processes to the 5 processors such
 time to complete all 200 processes is minimized. Can you find the best assignment? How close does your
 scheduler approximate the best assignment?
 
-### Task 02
+### Task 02 - DONE
 In order to execute a process on a specific processor, sufficient memory has to be available. Assume that
 the processing nodes are identical in speed but have the following memory availability: PA= PB = 2 GB,
 PC= PD = 4 GB and PE= 8GB. Modify your scheduling algorithm from Q1 to assign the processes to the
 corresponding processors. Show how well your algorithm minimizes the turnaround time of the set of 200
 processes.
 
-### Task 03 
+### Task 03 - DONE
 Modify your scheduling algorithm developed in Q1 and Q2 and show the best assignment of processes if
 the processors are identical, i.e., 8GB memory available but differ in speed. Specifically: PA= PB = 2 GHz,
 PC= PD = 3 GHz and PE= 4 GHz
 
-### Task 04 
+### Task 04 - DONE
 Last, but not least, develop a scheduling methodology that can deal with the sequential arrival of the 200
 processes. That is, the scheduler cannot inspect the entire set of processes but must schedule them one by
 one in the order that they arrive. What is the best turnaround time that you can achieve?
