@@ -27,9 +27,9 @@ class Processor {
 private:
 
 	struct node {
-	  int pid_val;	//TODO int
-    int burst_val;
-    double mem_size_val;
+	  int pid_val;
+	  int burst_val;
+	  double mem_size_val;
 	  struct node *next;
 	};
 	struct node *headPtr, *tailPtr;
@@ -38,7 +38,7 @@ private:
 public:
 
   Processor();
-//  ~Processor();
+  ~Processor();
   void add(const Process &);
   void remove();
   void print();
@@ -56,14 +56,14 @@ Processor::Processor() {
   this->processNum = 0;
 }
 
-/*
+
 Processor::~Processor() {
    int idx = 0;
   for ( idx = 0; idx < numOfItems; idx++ ) {
-
+	  this->remove();
   }
 }
-*/
+
 
 /*
   Adds node to processor queue, no specific order in which the processes
@@ -96,6 +96,12 @@ void Processor::add(const Process &processes) {
 void Processor::remove() {
   if ( numOfItems == 0 )
     return;
+
+  // remove head node, assign next node as head, delete old head, decrease number of items in queue
+  struct node *tempNode = this->headPtr;	// tempNode = node being removed
+  this->headPtr = tempNode->next;			// assign the next node in queue as the headPtr
+  delete tempNode;						// delete the old head node
+  this->numOfItems--;						// decrease number of items in queue by one
 }
 
 /*
