@@ -17,8 +17,8 @@ using namespace std;
 
 // need 200 processes
 struct Process {
-  int pid;        	// just an identifier for the program, not required
-  int burst_time; 	// 10 * 10^6 cycles – 50 *10^12 cycles
+  int pid;        	 // just an identifier for the program, not required
+  int burst_time; 	 // 10 * 10^6 cycles – 50 *10^12 cycles
   double mem_size;   // .25 MB - 8 GB
 };
 
@@ -43,9 +43,14 @@ public:
   void remove();
   void print();
   void setProcessNum(int num);
+  bool isOverAvgTime(int avg_turnaround_time);
 
 };
 
+/*
+ * Processor constructor. Initializes all the original values of each processor to NULL or 0. Except the mem_avail
+ * because in the instructions it states that all of the processors should have 8 GB of memory available.
+ */
 Processor::Processor() {
   this->headPtr = NULL;
   this->tailPtr = NULL;
@@ -56,7 +61,9 @@ Processor::Processor() {
   this->processNum = 0;
 }
 
-
+/*
+ * Processor destructor. Deletes every process in its queue, starting with the headPtr
+ */
 Processor::~Processor() {
    int idx = 0;
   for ( idx = 0; idx < numOfItems; idx++ ) {
@@ -66,9 +73,9 @@ Processor::~Processor() {
 
 
 /*
-  Adds node to processor queue, no specific order in which the processes
-  are listed as of right now.
-*/
+ * Adds node/process to the processor queue. Processes in the processor should be listed from processes
+ * with the greatest burst time to the smallest burst time (descending order)
+ */
 void Processor::add(const Process &processes) {
   struct node *newNodePtr = new node;
   newNodePtr->pid_val = processes.pid;
@@ -92,6 +99,7 @@ void Processor::add(const Process &processes) {
 }
 
 /*
+ * Only used by the destructor. Deletes each node in the processor queue one by one, starting with the headPtr.
 */
 void Processor::remove() {
   if ( numOfItems == 0 )
@@ -105,6 +113,14 @@ void Processor::remove() {
 }
 
 /*
+ * Returns true = turnaround time of processor is greater than the estimated optimal turnaround time per processor
+ */
+bool Processor::isOverAvgTime(int avg_turnaround_time) {
+	return (this->total_time > avg_turnaround_time);
+}
+
+/*
+ * Print the total turnaround time of the processor
 */
 void Processor::print() {
   if ( this->numOfItems == 0 ) {
@@ -116,14 +132,14 @@ void Processor::print() {
   tempPtr = this->headPtr;
   while ( tempPtr != NULL ) {
 //    cout << tempPtr->mem_size_val << endl;  // prints mem size of each process
-    cout << tempPtr->burst_val << endl;   // prints burst time of each process
+//    cout << tempPtr->burst_val << endl;   // prints burst time of each process
     tempPtr = tempPtr->next;
   }
   cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time << endl;
 }
 
 /*
- *
+ *	Set the processor value of each processor
  */
 void Processor::setProcessNum(int num) {
 	this->processNum = num;
@@ -196,19 +212,20 @@ int main() {
 }
 
 /*
-  Returns a random number to each unique process between 10 * 10^6 cycles – 50 *10^12 cycles
+  Returns a random number to each unique process between 10 * 10^6 cycles – 50 *10^12 cycles. Except I got rid of all
+  the zeroes because the random function was having a hard time creating numbers that high. All burst time values should
+  be regarded as that number * 10^7
 */
 int findBurstTime() {
   // generating a few negative numbers, FIX LATER
-  return rand() % 4999999 + 1;
+  return rand() % 4999999 + 1;	// all numbers should be regarded to as * 10^7
 }
 
 /*
   Returns a random number to each unique process between .25 MB - 8 GB
 */
 double findMemSize() {
-  return rand() % 799975 + 25 ; // number returned is divided by 100
-                                // to convert it back to MB
+  return rand() % 799975 + 25 ; // number returned is divided by 100 to convert it back to MB
 }
 
 /*
