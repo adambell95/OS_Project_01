@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <ctime>
 
-#define NPROCESSES 10  // number of proceses required
-#define MAXPROCESSES 40 // might take out later
+#define NPROCESSES 200  // number of processes required
+#define NPROCESSORS 5 	// number of processors required
 
 using namespace std;
 
@@ -43,6 +43,7 @@ public:
   void print();
   void setProcessNum(int num);	// either 1, 2, 3, 4, or 5
   void setSpeed(int num);   // should be 2, 3, or 4 GHz
+  int getTotalTime();
 
 };
 
@@ -119,6 +120,12 @@ void Processor::setSpeed(int num) {
   this->speed_ghz = num;  // speed set to 2 GHz
 }
 
+/*
+ *
+ */
+int Processor::getTotalTime() {
+	return this->total_time;
+}
 
 /*
 */
@@ -140,31 +147,54 @@ void Processor::print() {
 
 int findBurstTime();
 double findMemSize();
+void sortProcessesByTime(struct Process processArray[], int arraySize);
 
 int main() {
 
-  Processor P1, P2, P3, P4, P5;
-  P1.setProcessNum(1); P2.setProcessNum(2); P3.setProcessNum(3); P4.setProcessNum(4); P5.setProcessNum(5);
-  P1.setSpeed(2); P2.setSpeed(2); P3.setSpeed(3); P4.setSpeed(3); P5.setSpeed(4);
+  Processor P[NPROCESSORS];
+  for ( int idx = 0; idx < NPROCESSORS; idx++ ) {
+	  P[idx].setProcessNum(idx);
+	  if ( idx == 0 || idx == 1 )
+		P[idx].setSpeed(2);
+	  else if ( idx == 2 || idx == 3 )
+		P[idx].setSpeed(3);
+	  else
+		P[idx].setSpeed(4);
+  }
 
   struct Process p[NPROCESSES+1];
-  int idx = 0, burstTotal = 0, burst_avg = 0, counter = 0;
+  int idx = 0, burstTotal = 0, burst_avg = 0, counter = 0, temp_burst = 0;
 
   srand(time(NULL));
+  // srand(1);
 
   for ( idx = 0; idx <= NPROCESSES; idx++ ) {
     p[idx].pid = idx;
-    p[idx].burst_time = findBurstTime();  // change value later
+    temp_burst = findBurstTime();
+    p[idx].burst_time = temp_burst;  // change value later; Value * 10^7
+    burstTotal += temp_burst;
     p[idx].mem_size = findMemSize()/100;    // change value later
-    P1.add(p[idx]);     // this is how you add processes to processor
   }
 
-  // TODO sort
+  // sort processes into descending order
+  sortProcessesByTime(p, NPROCESSES);
+
   // processes with larger burst_times should be assigned to processors with higher speed (GHz)
 
-  //burst_avg = burstTotal / 200;
-  //cout << endl << burst_avg << endl << endl;
-  P1.print(); P2.print(); P3.print(); P4.print(); P5.print();
+  cout << "Total turnaround time of all processes:    " << burstTotal;
+  burst_avg = burstTotal/NPROCESSORS;
+  cout << "\nOptimal turnaround time of each processor: " << burst_avg << endl;
+  cout << "-------------------------------------------------\n";
+  // print list of processes in each processor
+  int maxTime = 0;
+  for ( idx = 0; idx < NPROCESSORS; idx++ ) {
+	  P[idx].print();
+	  if ( maxTime < P[idx].getTotalTime() )  maxTime = P[idx].getTotalTime();
+  }
+  cout << "-------------------------------------------------\n";
+  float max = maxTime, burst = burst_avg;
+  float deviation = max/burst;
+  cout << "Longest Processor Time: " << maxTime << "    Percent difference: " << (deviation - 1) * 100 << "%";
 
   return 0;
 }
@@ -183,6 +213,24 @@ int findBurstTime() {
 double findMemSize() {
   return rand() % 799975 + 25 ; // number returned is divided by 100
                                 // to convert it back to MB
+}
+
+/*
+ * Uses in-place bubblesort of Process array using burst-time as basis for ordering.
+ * Returns original array in descending burst-time order
+ */
+void sortProcessesByTime( struct Process processArray[], int arraySize ) {
+	if ( arraySize < 2 )
+		return;
+
+    for ( int passCtr = 0; passCtr < arraySize; passCtr++ ) // loop arraySize times
+    	for ( int ndx = 0; ndx < arraySize ; ndx++ )
+    		// swap adjacent elts if in ascending order
+            if ( processArray[ndx].burst_time < processArray[ndx+1].burst_time ) {
+               struct Process tmpProcess = processArray[ndx];
+               processArray[ndx] = processArray[ndx+1];
+               processArray[ndx+1] = tmpProcess;
+            }
 }
 
 
