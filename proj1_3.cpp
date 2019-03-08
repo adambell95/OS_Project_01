@@ -2,7 +2,11 @@
   Names:        Parker Tuck,
   Class:        CSCE 4600 - Operating Systems
   Instructor:   Armin R. Mikler
-  Description:  This .cpp file should only do problem #1 as of right now
+  Description:  proj1_3.cpp answers Question #3 of the assignment. This program will initialize 5 processors, 200 processes,
+  	  	  	  	sort the processes in descending order, add the processes to processors based on their size because the processors
+  	  	  	  	with larger speed (GHz) will be able to run through them faster, and then display the results of all the processes
+  	  	  	  	to the screen for the user to see/analyze. The cycles are divided by the speed to give the turnaround time, this
+  	  	  	  	was calculated by dividing the total number of cycles in each processor by the processor's GHz speed.
 */
 
 #include <iostream>
@@ -26,7 +30,7 @@ class Processor {
 private:
 
 	struct node {
-		int pid_val;	//TODO int
+		int pid_val;
     	int burst_val;
     	double mem_size_val;
 		struct node *next;
@@ -47,6 +51,9 @@ public:
 
 };
 
+/*
+ * Class constructor. This initializes all of the value in a processor; makes the memory available of each processor 8 GB
+ */
 Processor::Processor() {
   this->headPtr = NULL;
   this->tailPtr = NULL;
@@ -58,7 +65,9 @@ Processor::Processor() {
   this->processNum = 0;
 }
 
-
+/*
+ * Class destructor. Calls remove() which will remove all processes off of the processor one-by-one starting with the head.
+ */
 Processor::~Processor() {
    int idx = 0;
   for ( idx = 0; idx < numOfItems; idx++ ) {
@@ -68,8 +77,7 @@ Processor::~Processor() {
 
 
 /*
-  Adds node to processor queue, no specific order in which the processes
-  are listed as of right now.
+  Adds node to processor queue. Queue should be in descending order
 */
 void Processor::add(const Process &processes) {
   struct node *newNodePtr = new node;
@@ -93,7 +101,7 @@ void Processor::add(const Process &processes) {
 }
 
 /*
- *
+ * Removes processes from the processor queue one-by-one starting with the head.
 */
 void Processor::remove() {
   if ( numOfItems == 0 )
@@ -107,32 +115,33 @@ void Processor::remove() {
 }
 
 /*
- *
+ *	Sets the processor num of each processor created
  */
 void Processor::setProcessNum(int num) {
 	this->processNum = num; 	// either 1, 2, 3, 4, or 5
 }
 
 /*
-  Set speed of processor 1 to 2 Ghz
+  Set speed of processors to 2, 3, or 4 Ghz
 */
 void Processor::setSpeed(int num) {
-  this->speed_ghz = num;  // speed set to 2 GHz
+  this->speed_ghz = num;  // speed set to 2, 3, or 4 GHz
 }
 
 /*
- *
+ * Returns total time of the processor to main
  */
 int Processor::getTotalTime() {
 	if ( this->processNum == 1 || this->processNum == 2 )
-		return ( this->total_time / 2000 );
+		return ( this->total_time / 200 );
 	else if ( this->processNum == 3 || this->processNum == 4 )
-		return ( this->total_time / 3000 );
+		return ( this->total_time / 300 );
 	else
-		return ( this->total_time / 4000 );
+		return ( this->total_time / 400 );
 }
 
 /*
+ * Prints the turnaround time of each processor
 */
 void Processor::print() {
   if ( this->numOfItems == 0 ) {
@@ -148,14 +157,14 @@ void Processor::print() {
     tempPtr = tempPtr->next;
   }
   if ( this->processNum == 1 || this->processNum == 2 )
-	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/2000 <<
-	  	  	  " (Cycles in processor / GHz )" << endl;
+	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/200 <<
+	  	  	  " (Cycles in processor / " << this->speed_ghz << " GHz)" << endl;
   else if ( this->processNum == 3 || this->processNum == 4 )
-	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/3000 <<
-	  	  " (Cycles in processor / GHz )" << endl;
+	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/300 <<
+	  	  " (Cycles in processor / " << this->speed_ghz << " GHz)" << endl;
   else
-	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/4000 <<
-	  	  " (Cycles in processor / GHz )" << endl;
+	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/400 <<
+	  	  " (Cycles in processor / " << this->speed_ghz << " GHz)" << endl;
 
 }
 
@@ -179,8 +188,8 @@ int main() {
   struct Process p[NPROCESSES+1];
   int idx = 0, burstTotal = 0, burst_avg = 0, temp_burst = 0;
 
-  srand(time(NULL));
-  // srand(1);
+  //srand(time(NULL));
+  srand(15);
 
   for ( idx = 0; idx <= NPROCESSES; idx++ ) {
     p[idx].pid = idx;
@@ -193,7 +202,6 @@ int main() {
   // sort processes into descending order
   sortProcessesByTime(p, NPROCESSES);
 
-  // TODO create algorithm to assign the processes to processors
   // Processes with larger burst times should go to processors with larger GHz
   int smallCounter = 0, mediumCounter = 0;
   for ( idx = 0; idx < NPROCESSES; idx++ ) {
@@ -242,11 +250,7 @@ int main() {
 		  maxTime = P[idx].getTotalTime();
   }
   cout << "-------------------------------------------------\n";
-  float max = maxTime, burst = burst_avg;
-  float deviation = max/burst;
-  // TODO take out percent difference because it should be different because dividing by GHz
-  cout << "Longest Processor Time: " << maxTime << " (Cycles in processor / GHz)    \n    Percent difference: "
-		  << (deviation - 1) * 100 << "%";
+  cout << "Longest Processor Time: " << maxTime << " (Cycles in processor / GHz)";
 
   return 0;
 }
@@ -255,7 +259,6 @@ int main() {
   Returns a random number to each unique process between 10 * 10^6 cycles – 50 *10^12 cycles
 */
 int findBurstTime() {
-  // TODO: generating a few negative numbers, FIX LATER
   return rand() % (4999999) + (1);
 }
 
