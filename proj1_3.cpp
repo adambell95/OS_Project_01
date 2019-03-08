@@ -1,5 +1,5 @@
 /*
-  Names:        Parker Tuck, Adam Bell
+  Names:        Parker Tuck,
   Class:        CSCE 4600 - Operating Systems
   Instructor:   Armin R. Mikler
   Description:  This .cpp file should only do problem #1 as of right now
@@ -26,27 +26,24 @@ class Processor {
 private:
 
 	struct node {
-	  int pid_val;	//TODO int
-    int burst_val;
-    double mem_size_val;
-	  struct node *next;
+		int pid_val;	//TODO int
+    	int burst_val;
+    	double mem_size_val;
+		struct node *next;
 	};
 	struct node *headPtr, *tailPtr;
-	int numOfItems, avg_time, total_time, mem_avail, speed_ghz;
+	int numOfItems, avg_time, total_time, mem_avail, speed_ghz, processNum;
 
 public:
 
   Processor();
-//  ~Processor();
+  ~Processor();
   void add(const Process &);
   void remove();
   void print();
-  void setP1speed();   // should be 2 GHz
-  void setP2speed();   // should be 2 GHz
-  void setP3speed();   // should be 3 GHz
-  void setP4speed();   // should be 3 GHz
-  void setP5speed();   // should be 4 GHz
-  
+  void setProcessNum(int num);	// either 1, 2, 3, 4, or 5
+  void setSpeed(int num);   // should be 2, 3, or 4 GHz
+
 };
 
 Processor::Processor() {
@@ -57,16 +54,17 @@ Processor::Processor() {
   this->total_time = 0;
   this->mem_avail = 8000;  // 8 GB or 8000 MB
   this->speed_ghz = 0;
+  this->processNum = 0;
 }
 
-/*
+
 Processor::~Processor() {
    int idx = 0;
   for ( idx = 0; idx < numOfItems; idx++ ) {
-    
+	  this->remove();
   }
 }
-*/
+
 
 /*
   Adds node to processor queue, no specific order in which the processes
@@ -83,57 +81,44 @@ void Processor::add(const Process &processes) {
 		this->headPtr = newNodePtr;
 		this->tailPtr = newNodePtr;
 		this->numOfItems++;
-    this->total_time += processes.burst_time;
+		this->total_time += newNodePtr->burst_val;
 		return;
 	}
 
 	this->tailPtr->next = newNodePtr;
 	this->tailPtr = newNodePtr;
+	this->total_time += newNodePtr->burst_val;
 	this->numOfItems++;
-  
 }
 
 /*
+ *
 */
 void Processor::remove() {
   if ( numOfItems == 0 )
     return;
+
+  // remove head node, assign next node as head, delete old head, decrease number of items in queue
+    struct node *tempNode = this->headPtr;	// tempNode = node being removed
+    this->headPtr = tempNode->next;			// assign the next node in queue as the headPtr
+    delete tempNode;						// delete the old head node
+    this->numOfItems--;						// decrease number of items in queue by one
+}
+
+/*
+ *
+ */
+void Processor::setProcessNum(int num) {
+	this->processNum = num; 	// either 1, 2, 3, 4, or 5
 }
 
 /*
   Set speed of processor 1 to 2 Ghz
 */
-void Processor::setP1speed() {
-  this->speed_ghz = 2;  // speed set to 2 GHz
+void Processor::setSpeed(int num) {
+  this->speed_ghz = num;  // speed set to 2 GHz
 }
 
-/*
-  Set speed of processor 2 to 2 Ghz
-*/
-void Processor::setP2speed() {
-  this->speed_ghz = 2;  // speed set to 2 GHz
-}
-
-/*
-  Set speed of processor 3 to 3 Ghz
-*/
-void Processor::setP3speed() {
-  this->speed_ghz = 3;  // speed set to 3 GHz
-}
-
-/*
-  Set speed of processor 4 to 3 Ghz
-*/
-void Processor::setP4speed() {
-  this->speed_ghz = 3;  // speed set to 3 GHz
-}
-
-/*
-  Set speed of processor 5 to 4 Ghz
-*/
-void Processor::setP5speed() {
-  this->speed_ghz = 4;  // speed set to 4 GHz
-}
 
 /*
 */
@@ -142,7 +127,7 @@ void Processor::print() {
     cout << "No processes in processor.\n";
     return;
   }
-  
+
   struct node *tempPtr;
   tempPtr = this->headPtr;
   while ( tempPtr != NULL ) {
@@ -150,7 +135,7 @@ void Processor::print() {
 //    cout << tempPtr->burst_val << endl;   // prints burst time of each process
     tempPtr = tempPtr->next;
   }
-  cout << "total time: " << this->total_time << endl;
+  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time << endl;
 }
 
 int findBurstTime();
@@ -159,39 +144,33 @@ double findMemSize();
 int main() {
 
   Processor P1, P2, P3, P4, P5;
-  P1.setP1speed(); P2.setP2speed(); P3.setP3speed(); P4.setP4speed(); P5.setP5speed();
+  P1.setProcessNum(1); P2.setProcessNum(2); P3.setProcessNum(3); P4.setProcessNum(4); P5.setProcessNum(5);
+  P1.setSpeed(2); P2.setSpeed(2); P3.setSpeed(3); P4.setSpeed(3); P5.setSpeed(4);
+
   struct Process p[NPROCESSES+1];
-  int idx = 0, burstTotal = 0, burst_avg = 0;
+  int idx = 0, burstTotal = 0, burst_avg = 0, counter = 0;
+
   srand(time(NULL));
-  
+
   for ( idx = 0; idx <= NPROCESSES; idx++ ) {
     p[idx].pid = idx;
     p[idx].burst_time = findBurstTime();  // change value later
     p[idx].mem_size = findMemSize()/100;    // change value later
     P1.add(p[idx]);     // this is how you add processes to processor
   }
-  
-  
+
+
   for (idx = 0; idx <+ NPROCESSES; idx++) {
     burstTotal += p[idx].burst_time;
     if ( p[idx].mem_size > 4000 )
        P5.add(p[idx]);  // if mem size of process is > 4 GB, it has to go to processor 5
     //cout << p[idx].burst_time << endl;
   }
-  
+
   //burst_avg = burstTotal / 200;
   //cout << endl << burst_avg << endl << endl;
-  cout << "Processor 1 List:" << endl;
-  P1.print();
-  cout << "\nProcessor 2 List:\n"; 
-  P2.print();
-  cout << "\nProcessor 3 List:\n"; 
-  P3.print();  
-  cout << "\nProcessor 4 List:\n"; 
-  P4.print();  
-  cout << "\nProcessor 5 List:\n"; 
-  P5.print();
-  
+  P1.print(); P2.print(); P3.print(); P4.print(); P5.print();
+
   return 0;
 }
 
@@ -200,14 +179,14 @@ int main() {
 */
 int findBurstTime() {
   // TODO: generating a few negative numbers, FIX LATER
-  return rand() % (49999990000000) + (10000000); 
+  return rand() % (4999999) + (1);
 }
 
 /*
   Returns a random number to each unique process between .25 MB - 8 GB
 */
 double findMemSize() {
-  return rand() % 799975 + 25 ; // number returned is divided by 100 
+  return rand() % 799975 + 25 ; // number returned is divided by 100
                                 // to convert it back to MB
 }
 
