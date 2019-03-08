@@ -124,7 +124,12 @@ void Processor::setSpeed(int num) {
  *
  */
 int Processor::getTotalTime() {
-	return this->total_time;
+	if ( this->processNum == 1 || this->processNum == 2 )
+		return ( this->total_time / 2000 );
+	else if ( this->processNum == 3 || this->processNum == 4 )
+		return ( this->total_time / 3000 );
+	else
+		return ( this->total_time / 4000 );
 }
 
 /*
@@ -143,11 +148,14 @@ void Processor::print() {
     tempPtr = tempPtr->next;
   }
   if ( this->processNum == 1 || this->processNum == 2 )
-	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/2000 << endl;
+	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/2000 <<
+	  	  	  " (Cycles in processor / GHz )" << endl;
   else if ( this->processNum == 3 || this->processNum == 4 )
-	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/4000 << endl;
+	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/3000 <<
+	  	  " (Cycles in processor / GHz )" << endl;
   else
-	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/8000 << endl;
+	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/4000 <<
+	  	  " (Cycles in processor / GHz )" << endl;
 
 }
 
@@ -191,7 +199,8 @@ int main() {
   for ( idx = 0; idx < NPROCESSES; idx++ ) {
 	  if ( p[idx].burst_time > 3999999 )
 		  P[4].add(p[idx]);
-	  else if ( (p[idx].burst_time > 1999999) && (p[idx].burst_time <= 3999999) ) {
+	  // 2999999
+	  else if ( (p[idx].burst_time > 2500000) && (p[idx].burst_time <= 3999999) ) {
 		  if ( mediumCounter == 0 ) {
 			  P[3].add(p[idx]);
 			  mediumCounter = 1;
@@ -221,9 +230,9 @@ int main() {
   }
 */
 
-  cout << "Total turnaround time of all processes:    " << burstTotal;
+  cout << "Total cycles of all processes:    " << burstTotal;
   burst_avg = burstTotal/NPROCESSORS;
-  cout << "\nOptimal turnaround time of each processor: " << burst_avg << endl;
+  cout << "\nOptimal number of cycles on each processor: " << burst_avg << endl;
   cout << "-------------------------------------------------\n";
   // print list of processes in each processor
   int maxTime = 0;
@@ -235,7 +244,9 @@ int main() {
   cout << "-------------------------------------------------\n";
   float max = maxTime, burst = burst_avg;
   float deviation = max/burst;
-  cout << "Longest Processor Time: " << maxTime << "    Percent difference: " << (deviation - 1) * 100 << "%";
+  // TODO take out percent difference because it should be different because dividing by GHz
+  cout << "Longest Processor Time: " << maxTime << " (Cycles in processor / GHz)    \n    Percent difference: "
+		  << (deviation - 1) * 100 << "%";
 
   return 0;
 }
