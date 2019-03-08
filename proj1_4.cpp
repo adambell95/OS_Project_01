@@ -166,7 +166,7 @@ int main() {
 
   struct Process p[NPROCESSES+1];
 
-  int idx = 0, burstTotal = 0, burst_avg = 0, temp_burst = 0, counter = 1;
+  int idx = 0, burstTotal = 0, burst_avg = 0, temp_burst = 0;
   // srand(1);
   srand(time(NULL));
 
@@ -177,22 +177,23 @@ int main() {
     p[idx].burst_time = temp_burst;  // change value later = * 10^7
     burstTotal += temp_burst;
     p[idx].mem_size = findMemSize()/100;    // change value later
-
+    // continuously sort the processes as they come in one by one
+    sortProcessesByTime(p, idx+1);		// idx+1 because idx originally starts at 0
+// TODO supposed to handle the processes one by one, so compare each process as they enter and put them in descending
+    //  order that way
  // TODO must schedule them one by one as they arrive
   }
 
   // sort processes into descending order
   //sortProcessesByTime(p, NPROCESSES);
 
-
-/*
+// TODO prints 830846095 as first number in list even though thats not even in the range
   // prints entire list of process burst times
   for (idx = 0; idx <+ NPROCESSES; idx++) {
-    //burstTotal += p[idx].burst_time;
     cout << p[idx].burst_time << endl;
-    cout << p[idx].mem_size << endl;
+    //cout << p[idx].mem_size << endl;
   }
-*/
+return 0;
 
   cout << "Total turnaround time of all processes:    " << burstTotal;
   burst_avg = burstTotal / 5;
@@ -218,8 +219,7 @@ int main() {
   be regarded as that number * 10^7
 */
 int findBurstTime() {
-  // generating a few negative numbers, FIX LATER
-  return rand() % 4999999 + 1;	// all numbers should be regarded to as * 10^7
+  return rand() % 4999999 + 1;	// all numbers should be regarded to as * 10^7, easier to calculate with smaller numbers
 }
 
 /*
