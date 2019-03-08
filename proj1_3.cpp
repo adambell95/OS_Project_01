@@ -159,13 +159,8 @@ int main() {
     P1.add(p[idx]);     // this is how you add processes to processor
   }
 
-
-  for (idx = 0; idx <+ NPROCESSES; idx++) {
-    burstTotal += p[idx].burst_time;
-    if ( p[idx].mem_size > 4000 )
-       P5.add(p[idx]);  // if mem size of process is > 4 GB, it has to go to processor 5
-    //cout << p[idx].burst_time << endl;
-  }
+  // TODO sort
+  // processes with larger burst_times should be assigned to processors with higher speed (GHz)
 
   //burst_avg = burstTotal / 200;
   //cout << endl << burst_avg << endl << endl;
