@@ -15,7 +15,7 @@ processing nodes.
 - We can assume that once a process has been dispatched to a specific processor, it will remain with this processor
 and once started to execute, it will be completed, i.e., there is no preemption.
 
-### Task 01 
+### Task 01 - DONE
 Suppose that all 5 processors are identical (i.e., same speed and memory), develop and implement a
 scheduling algorithm that assigns the set 200 processes to the 5 processors such that the total turnaround
 time to complete all 200 processes is minimized. Can you find the best assignment? How close does your
