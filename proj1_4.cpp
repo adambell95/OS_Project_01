@@ -2,7 +2,10 @@
   Names:        Parker Tuck,
   Class:        CSCE 4600 - Operating Systems
   Instructor:   Armin R. Mikler
-  Description:  This .cpp file should only do problem #1 as of right now
+  Description:  proj1_4.cpp answers Question #4 of the assignment. This program will initialize 5 processors, 200 processes,
+  	  	  	  	add the processes to the processors one by one as each process is created, then print the results to the screen
+  	  	  	  	for the user to see/analyze. The processes are assigned to each processor one by one by doing idx % NPROCESSORS,
+  	  	  	  	which basically does a Round Robin on the processors when assigning the processes to them.
 */
 
 #include <iostream>
@@ -43,7 +46,6 @@ public:
   void remove();
   void print();
   void setProcessNum(int num);
-  bool isOverAvgTime(int avg_turnaround_time);
   int getTotalTime();
 
 };
@@ -114,14 +116,7 @@ void Processor::remove() {
 }
 
 /*
- * Returns true = turnaround time of processor is greater than the estimated optimal turnaround time per processor
- */
-bool Processor::isOverAvgTime(int avg_turnaround_time) {
-	return (this->total_time > avg_turnaround_time);
-}
-
-/*
- * Print the total turnaround time of the processor
+ * Prints the total number of cycles in each processor
 */
 void Processor::print() {
   if ( this->numOfItems == 0 ) {
@@ -136,14 +131,14 @@ void Processor::print() {
 //    cout << tempPtr->burst_val << endl;   // prints burst time of each process
     tempPtr = tempPtr->next;
   }
-  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time << endl;
+  cout << "Number of Cycles on Processor " << this->processNum << ": " << this->total_time << endl;
 }
 
 /*
  *	Set the processor value of each processor
  */
 void Processor::setProcessNum(int num) {
-	this->processNum = num;
+	this->processNum = num;		// 1, 2, 3, 4, or 5
 }
 
 /*
@@ -166,9 +161,9 @@ int main() {
 
   struct Process p[NPROCESSES+1];
 
-  int idx = 0, burstTotal = 0, burst_avg = 0, temp_burst = 0;
-  // srand(1);
-  srand(time(NULL));
+  int idx = 0, burstTotal = 0, burst_avg = 0, temp_burst = 0, counter = 0;
+  srand(11);
+  //srand(time(NULL));
 
   // initialize set of processes
   for ( idx = 0; idx < NPROCESSES; idx++ ) {
@@ -177,27 +172,23 @@ int main() {
     p[idx].burst_time = temp_burst;  // change value later = * 10^7
     burstTotal += temp_burst;
     p[idx].mem_size = findMemSize()/100;    // change value later
-    // continuously sort the processes as they come in one by one
-    sortProcessesByTime(p, idx+1);		// idx+1 because idx originally starts at 0
-// TODO supposed to handle the processes one by one, so compare each process as they enter and put them in descending
-    //  order that way
- // TODO must schedule them one by one as they arrive
+
+    // must schedule them one by one as they arrive
+    counter = idx % NPROCESSORS;
+    P[counter].add(p[idx]);
   }
 
-  // sort processes into descending order
-  //sortProcessesByTime(p, NPROCESSES);
-
-// TODO prints 830846095 as first number in list even though thats not even in the range
+/*
   // prints entire list of process burst times
-  for (idx = 0; idx <+ NPROCESSES; idx++) {
+  for (idx = 0; idx < NPROCESSES; idx++) {
     cout << p[idx].burst_time << endl;
     //cout << p[idx].mem_size << endl;
   }
-return 0;
+*/
 
-  cout << "Total turnaround time of all processes:    " << burstTotal;
+  cout << "Total cycles of all processes:    " << burstTotal;
   burst_avg = burstTotal / 5;
-  cout << "\nOptimal turnaround time of each processor: " << burst_avg << endl;
+  cout << "\nOptimal number of cycles on each processor: " << burst_avg << endl;
   cout << "-------------------------------------------------\n";
   // print list of processes in each processor
   int maxTime = 0;
@@ -208,7 +199,7 @@ return 0;
   cout << "-------------------------------------------------\n";
   float max = maxTime, burst = burst_avg;
   float deviation = max/burst;
-  cout << "Longest Processor Time: " << maxTime << "    Percent difference: " << (deviation - 1) * 100 << "%";
+  cout << "Largest Number of Cycles on a Processor: " << maxTime << "\nPercent difference: " << (deviation - 1) * 100 << "%";
 
   return 0;
 }
