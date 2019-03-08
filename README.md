@@ -7,7 +7,7 @@ processing nodes.
 - Processors are identified as PA, PB, … 
 - Now consider n = 200 processes with different runtime requirements. 
 - Specifically, each process has associated with it a burst time (processing time) and a memory requirement. 
-- Burst-times are assigned at random (10 * 106 cycles – 50*1012 cycles). 
+- Burst-times are assigned at random (10*10^6 cycles – 50*10^12 cycles). 
 - Memory requirements are assigned at random (.25 MB – 8GB). 
 - For questions 1 – 3, you may assume that the set of 200 processes is known a-priori; 
 - Hence, you will have to develop a function that can generate this set with random burst-times and memory requirements.
