@@ -88,6 +88,7 @@ void Processor::add(const Process &processes) {
 
 	this->tailPtr->next = newNodePtr;
 	this->tailPtr = newNodePtr;
+	this->total_time += newNodePtr->burst_val;
 	this->numOfItems++;
 
 }
@@ -137,7 +138,7 @@ void Processor::print() {
     //cout << tempPtr->burst_val << endl;
     tempPtr = tempPtr->next;
   }
-  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time << endl;
+  cout << "Number of Cycles on Processor " << this->processNum << ": " << this->total_time << endl;
 }
 
 /*
@@ -167,8 +168,8 @@ int main() {
   struct Process p[NPROCESSES+1];
 
   int idx = 0, burstTotal = 0, burst_avg = 0, temp_burst = 0;;
-  //srand(time(NULL));
-  srand(1);
+  srand(time(NULL));
+  //srand(1);
 
   for ( idx = 0; idx < NPROCESSES; idx++ ) {
     p[idx].pid = idx;
@@ -226,9 +227,9 @@ int main() {
   	  	  	  	  	  	  	  	  	  	  	// time calculated in main??
 //  return 0;
 
-  cout << "Total turnaround time of all processes:    " << burstTotal;
+  cout << "Total cycles of all processes:    " << burstTotal;
   burst_avg = burstTotal/NPROCESSORS;
-  cout << "\nOptimal turnaround time of each processor: " << burst_avg << endl;
+  cout << "\nOptimal cycles on each processor: " << burst_avg << endl;
   cout << "-------------------------------------------------\n";
   // print list of processes in each processor
   int maxTime = 0;
@@ -239,7 +240,7 @@ int main() {
   cout << "-------------------------------------------------\n";
   float max = maxTime, burst = burst_avg;
   float deviation = max/burst;
-  cout << "Longest Processor Time: " << maxTime << "    Percent difference: " << (deviation - 1) * 100 << "%";
+  cout << "Largest Number of Cycles on a Processor: " << maxTime << "    Percent difference: " << (deviation - 1) * 100 << "%";
 
   return 0;
 }
