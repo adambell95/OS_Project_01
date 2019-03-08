@@ -43,6 +43,8 @@ public:
   void print();
   void setMemAvail(int memory);   // should be 2 GB
   void setProcessNum(int num);
+  bool isOverAvgTime(int avg_turnaround_time);
+
 };
 
 Processor::Processor() {
@@ -114,6 +116,13 @@ void Processor::setProcessNum(int num) {
 }
 
 /*
+ * Returns true = turnaround time of processor is greater than the estimated optimal turnaround time per processor
+ */
+bool Processor::isOverAvgTime(int avg_turnaround_time) {
+	return (this->total_time > avg_turnaround_time);
+}
+
+/*
 */
 void Processor::print() {
   if ( this->numOfItems == 0 ) {
@@ -141,14 +150,40 @@ int main() {
 
   struct Process p[NPROCESSES+1];
 
-  int idx = 0, burstTotal = 0, burst_avg = 0;
+  int idx = 0, burstTotal = 0, burst_avg = 0, counter = 1, temp_burst = 0;;
   srand(time(NULL));
 
   for ( idx = 0; idx <= NPROCESSES; idx++ ) {
     p[idx].pid = idx;
-    p[idx].burst_time = findBurstTime();  // change value later
-    p[idx].mem_size = findMemSize()/100;    // change value later
-    P1.add(p[idx]);     // this is how you add processes to processor
+	temp_burst = findBurstTime();
+	p[idx].burst_time = temp_burst;  // change value later
+	burstTotal += temp_burst;
+	p[idx].mem_size = findMemSize()/100;    // change value later
+  }
+
+  burst_avg = burstTotal/5;
+
+  for (idx = 0; idx <+ NPROCESSES; idx++) {
+    if ( p[idx].mem_size > 4000 )
+       P5.add(p[idx]);  // if mem size of process is > 4 GB, it has to go to processor 5
+    else {	// alternates processors and assigns an even number of processes to each processor
+        if ( counter == 1 ) {
+            P1.add(p[idx]);     // this is how you add processes to processor
+            counter = 2;
+        }
+        else if ( counter == 2 ) {
+        	P2.add(p[idx]);
+        	counter = 3;
+        }
+        else if ( counter == 3 ) {
+            P3.add(p[idx]);     // this is how you add processes to processor
+            counter = 4;
+        }
+        else {
+            P4.add(p[idx]);     // this is how you add processes to processor
+            counter = 1;
+        }
+    }
   }
 
   /*
