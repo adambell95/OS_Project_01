@@ -136,7 +136,7 @@ void Processor::print() {
 //    cout << tempPtr->burst_val << endl;   // prints burst time of each process
     tempPtr = tempPtr->next;
   }
-  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time << endl;
+  cout << "Number of Cycles on Processor " << this->processNum << ": " << this->total_time << endl;
 }
 
 /*
@@ -197,9 +197,9 @@ int main() {
   }
 */
 
-  cout << "Total turnaround time of all processes:    " << burstTotal;
+  cout << "Total cycles of all processes:\t\t    " << burstTotal;
   burst_avg = burstTotal / 5;
-  cout << "\nOptimal turnaround time of each processor: " << burst_avg << endl;
+  cout << "\nOptimal number of cycles on each processor: " << burst_avg << endl;
   cout << "-------------------------------------------------\n";
   // print list of processes in each processor
   int maxTime = 0;
@@ -210,7 +210,7 @@ int main() {
   cout << "-------------------------------------------------\n";
   float max = maxTime, burst = burst_avg;
   float deviation = max/burst;
-  cout << "Longest Processor Time: " << maxTime << "    Percent difference: " << (deviation - 1) * 100 << "%";
+  cout << "Largest Number of Cycles on a Processor: " << maxTime << "\nPercent difference: " << (deviation - 1) * 100 << "%";
 
   return 0;
 }
