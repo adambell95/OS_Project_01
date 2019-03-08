@@ -1,5 +1,5 @@
 /*
-  Names:        Parker Tuck,
+  Names:        Parker Tuck, Adam Bell
   Class:        CSCE 4600 - Operating Systems
   Instructor:   Armin R. Mikler
   Description:  proj1_1.cpp answers Question #1 of the assignment. This program will initialize a set of 5 processors, a set of
