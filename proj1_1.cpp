@@ -194,6 +194,7 @@ int main() {
   for (idx = 0; idx <+ NPROCESSES; idx++) {
     //burstTotal += p[idx].burst_time;
     cout << p[idx].burst_time << endl;
+    cout << p[idx].mem_size << endl;
   }
 */
 
