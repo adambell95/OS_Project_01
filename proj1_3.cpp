@@ -138,11 +138,17 @@ void Processor::print() {
   struct node *tempPtr;
   tempPtr = this->headPtr;
   while ( tempPtr != NULL ) {
-    cout << tempPtr->mem_size_val << endl;  // prints mem size of each process
+//    cout << tempPtr->mem_size_val << endl;  // prints mem size of each process
 //    cout << tempPtr->burst_val << endl;   // prints burst time of each process
     tempPtr = tempPtr->next;
   }
-  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time << endl;
+  if ( this->processNum == 1 || this->processNum == 2 )
+	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/2000 << endl;
+  else if ( this->processNum == 3 || this->processNum == 4 )
+	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/4000 << endl;
+  else
+	  cout << "Turnaround Time of Processor " << this->processNum << ": " << this->total_time/8000 << endl;
+
 }
 
 int findBurstTime();
@@ -153,7 +159,7 @@ int main() {
 
   Processor P[NPROCESSORS];
   for ( int idx = 0; idx < NPROCESSORS; idx++ ) {
-	  P[idx].setProcessNum(idx);
+	  P[idx].setProcessNum(idx+1);
 	  if ( idx == 0 || idx == 1 )
 		P[idx].setSpeed(2);
 	  else if ( idx == 2 || idx == 3 )
@@ -163,7 +169,7 @@ int main() {
   }
 
   struct Process p[NPROCESSES+1];
-  int idx = 0, burstTotal = 0, burst_avg = 0, counter = 0, temp_burst = 0;
+  int idx = 0, burstTotal = 0, burst_avg = 0, temp_burst = 0;
 
   srand(time(NULL));
   // srand(1);
@@ -179,7 +185,41 @@ int main() {
   // sort processes into descending order
   sortProcessesByTime(p, NPROCESSES);
 
-  // processes with larger burst_times should be assigned to processors with higher speed (GHz)
+  // TODO create algorithm to assign the processes to processors
+  // Processes with larger burst times should go to processors with larger GHz
+  int smallCounter = 0, mediumCounter = 0;
+  for ( idx = 0; idx < NPROCESSES; idx++ ) {
+	  if ( p[idx].burst_time > 3999999 )
+		  P[4].add(p[idx]);
+	  else if ( (p[idx].burst_time > 1999999) && (p[idx].burst_time <= 3999999) ) {
+		  if ( mediumCounter == 0 ) {
+			  P[3].add(p[idx]);
+			  mediumCounter = 1;
+		  }
+		  else {
+			  P[2].add(p[idx]);
+			  mediumCounter = 0;
+		  }
+	  }
+	  else {
+		  if ( smallCounter == 0 ) {
+			  P[1].add(p[idx]);
+			  smallCounter = 1;
+		  }
+		  else {
+			  P[0].add(p[idx]);
+			  smallCounter = 0;
+		  }
+	  }
+  } // end for
+
+/*
+  // prints entire list of process burst times
+  for (idx = 0; idx <+ NPROCESSES; idx++) {
+    cout << p[idx].burst_time << endl;
+    //cout << p[idx].mem_size << endl;
+  }
+*/
 
   cout << "Total turnaround time of all processes:    " << burstTotal;
   burst_avg = burstTotal/NPROCESSORS;
@@ -189,7 +229,8 @@ int main() {
   int maxTime = 0;
   for ( idx = 0; idx < NPROCESSORS; idx++ ) {
 	  P[idx].print();
-	  if ( maxTime < P[idx].getTotalTime() )  maxTime = P[idx].getTotalTime();
+	  if ( maxTime < P[idx].getTotalTime() )
+		  maxTime = P[idx].getTotalTime();
   }
   cout << "-------------------------------------------------\n";
   float max = maxTime, burst = burst_avg;
