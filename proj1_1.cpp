@@ -11,7 +11,6 @@
 #include <bits/stdc++.h>
 
 #define NPROCESSES 200  // number of processes required
-#define MAXPROCESSES 40 // might take out later
 #define NPROCESSORS 5	// number of processors required
 
 using namespace std;
@@ -198,7 +197,7 @@ int main() {
   }
 */
 
-  cout << "Total turnaround time of all processes:   " << burstTotal;
+  cout << "Total turnaround time of all processes:    " << burstTotal;
   burst_avg = burstTotal / 5;
   cout << "\nOptimal turnaround time of each processor: " << burst_avg << endl;
   cout << "-------------------------------------------------\n";
