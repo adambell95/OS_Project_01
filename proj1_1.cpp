@@ -2,7 +2,10 @@
   Names:        Parker Tuck,
   Class:        CSCE 4600 - Operating Systems
   Instructor:   Armin R. Mikler
-  Description:  This .cpp file should only do problem #1 as of right now
+  Description:  proj1_1.cpp answers Question #1 of the assignment. This program will initialize a set of 5 processors, a set of
+  	  	  	  	200 processes, sort the processes in descending order, assign the processes to processors, then display the
+  	  	  	  	data to the screen for the user to see. The percent difference between the optimal number of cycles on each
+  	  	  	  	processor and actual number of cycles on each processor is almost always below 5%.
 */
 
 #include <iostream>
@@ -43,7 +46,6 @@ public:
   void remove();
   void print();
   void setProcessNum(int num);
-  bool isOverAvgTime(int avg_turnaround_time);
   int getTotalTime();
 
 };
@@ -111,13 +113,6 @@ void Processor::remove() {
   this->headPtr = tempNode->next;			// assign the next node in queue as the headPtr
   delete tempNode;						// delete the old head node
   this->numOfItems--;						// decrease number of items in queue by one
-}
-
-/*
- * Returns true = turnaround time of processor is greater than the estimated optimal turnaround time per processor
- */
-bool Processor::isOverAvgTime(int avg_turnaround_time) {
-	return (this->total_time > avg_turnaround_time);
 }
 
 /*
