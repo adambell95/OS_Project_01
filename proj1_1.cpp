@@ -211,7 +211,7 @@ int main() {
   cout << "-------------------------------------------------\n";
   float max = maxTime, burst = burst_avg;
   float deviation = max/burst;
-  cout << "Longest Processor Time: " << maxTime << "    Pecent difference: " << (deviation - 1) * 100 << "%";
+  cout << "Longest Processor Time: " << maxTime << "    Percent difference: " << (deviation - 1) * 100 << "%";
 
   return 0;
 }
