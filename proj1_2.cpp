@@ -2,7 +2,10 @@
   Names:        Parker Tuck,
   Class:        CSCE 4600 - Operating Systems
   Instructor:   Armin R. Mikler
-  Description:  This .cpp file should only do problem #1 as of right now
+  Description:  proj1_2.cpp answers Question #2 of the assignment. This program will initialize 5 processors, 200 processes,
+  	  	  	  	sort the processes in descending order, assign the processes to processors based on the memory requirements
+  	  	  	  	(processes over 4 GB must go to processor 5, and processes over 2 GB must go to processors 3, 4, or 5), and
+  	  	  	  	finally the results are displayed on the screen for the user to see/analyze.
 */
 
 #include <iostream>
@@ -26,7 +29,7 @@ class Processor {
 private:
 
 	struct node {
-	  int pid_val;	//TODO int
+	  int pid_val;
     int burst_val;
     double mem_size_val;
 	  struct node *next;
@@ -42,12 +45,14 @@ public:
   void remove();
   void print();
   void setMemAvail(int memory);   // should be 2, 4, or 8 GB
-  void setProcessNum(int num);
-  bool isOverAvgTime(int avg_turnaround_time);
+  void setProcessNum(int num);	  // will be either 1, 2, 3, 4, or 5
   int getTotalTime();
 
 };
 
+/*
+ * Class constructor. Initializes all Processors to these values when first created.
+ */
 Processor::Processor() {
   this->headPtr = NULL;
   this->tailPtr = NULL;
@@ -58,7 +63,9 @@ Processor::Processor() {
   this->processNum = 0;
 }
 
-
+/*
+ * Class destructor. Removes processes from the processor one-by-one starting with the head.
+ */
 Processor::~Processor() {
    int idx = 0;
   for ( idx = 0; idx < numOfItems; idx++ ) {
@@ -68,8 +75,8 @@ Processor::~Processor() {
 
 
 /*
-  Adds node to processor queue, no specific order in which the processes
-  are listed as of right now.
+  Adds node to processor queue. Processes will be in descending order and will be assigned to processors with the proper
+  memory available.
 */
 void Processor::add(const Process &processes) {
   struct node *newNodePtr = new node;
@@ -94,6 +101,7 @@ void Processor::add(const Process &processes) {
 }
 
 /*
+ * Removes processes from the processor queue one-by-one starting with the head.
 */
 void Processor::remove() {
   if ( numOfItems == 0 )
@@ -107,24 +115,21 @@ void Processor::remove() {
 }
 
 /*
-  Set memory available in this processor to 2 GB or 2000 MB
+  Set memory available in this processor to 2, 4, or 8 GB
 */
 void Processor::setMemAvail(int memory) {
   this->mem_avail = memory;   // 2000 MB = 2 GB, 4000 MB = 4 GB, or 8000 MB = 8 GB
 }
 
+/*
+ * Sets the processor number when created to either 1, 2, 3, 4, or 5
+ */
 void Processor::setProcessNum(int num) {
 	this->processNum = num;		// either 1, 2, 3, 4, or 5
 }
 
 /*
- * Returns true = turnaround time of processor is greater than the estimated optimal turnaround time per processor
- */
-bool Processor::isOverAvgTime(int avg_turnaround_time) {
-	return (this->total_time > avg_turnaround_time);
-}
-
-/*
+ * Prints the number of cycles on each processor as well as the memory available that is set to that processor.
 */
 void Processor::print() {
   if ( this->numOfItems == 0 ) {
@@ -138,11 +143,17 @@ void Processor::print() {
     //cout << tempPtr->burst_val << endl;
     tempPtr = tempPtr->next;
   }
-  cout << "Number of Cycles on Processor " << this->processNum << ": " << this->total_time << endl;
+  if ( this->processNum != 5)
+	  cout << "Number of Cycles on Processor " << this->processNum << ": " << this->total_time << " (" << this->mem_avail / 1000 <<
+		  " GB)\n";
+  else
+	  cout << "Number of Cycles on Processor " << this->processNum << ": " << this->total_time << " (" << this->mem_avail / 1000 <<
+	 		  " GB) *All processes on this processor cannot go on any other processor due to memory available.* "
+	 		  "\n\t\t\t\t\t\t  *That is why it's larger than the others.*\n";
 }
 
 /*
- *
+ * Returns the total time of a certain process back to main.
  */
 int Processor::getTotalTime() {
 	return this->total_time;
@@ -222,10 +233,6 @@ int main() {
 		  }
 	  }
   } // end for
-
-//  cout << "\n" << totalCounter << endl;	// says it reaches 200 but the total times of the processes dont add up to the total
-  	  	  	  	  	  	  	  	  	  	  	// time calculated in main??
-//  return 0;
 
   cout << "Total cycles of all processes:    " << burstTotal;
   burst_avg = burstTotal/NPROCESSORS;
