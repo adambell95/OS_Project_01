@@ -248,7 +248,8 @@ int main() {
   float max = maxTime, burst = burst_avg;
   float deviation = max/burst;
   cout << "Largest Number of Cycles on a Processor: " << maxTime << "    Percent difference: " << (deviation - 1) * 100 << "%";
-
+  cout << endl;
+	
   return 0;
 }
 
