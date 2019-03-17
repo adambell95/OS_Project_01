@@ -250,7 +250,7 @@ int main() {
 		  maxTime = P[idx].getTotalTime();
   }
   cout << "-------------------------------------------------\n";
-  cout << "Longest Processor Time: " << maxTime << " (Cycles in processor / GHz)";
+  cout << "Longest Processor Time: " << maxTime << " (Cycles in processor / GHz)" << endl;
 
   return 0;
 }
