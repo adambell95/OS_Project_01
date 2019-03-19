@@ -42,10 +42,3 @@ created with the method you developed in HW#2.
 
 **********************************************************************************************************************************
 
-Parker: 
-I think it'd be better to use a queue to hold the processes in each processor. 
-So that's what I started implementing in the code that I have written so far.
-
-ALSO ADD YOUR NAMES AT THE HEADER OF EACH FILE
-  
-I also recommend that if you want to change code in the files, you should make your own copy of it so that if something doesn't work out, we are not lost on how to get it back to how it was originally.
